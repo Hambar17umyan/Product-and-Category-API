@@ -48,7 +48,6 @@ public static class DependancyInjection
     /// This method is used to configure the dependancy injection for the repositories.
     /// </summary>
     /// <param name="builder">The builder.</param>
-    /// <returns>The builder.</returns>
     private static void InjectRepositories(this WebApplicationBuilder builder)
     {
         builder.Services
@@ -60,7 +59,6 @@ public static class DependancyInjection
     /// This method is used to configure the dependancy injection for the services.
     /// </summary>
     /// <param name="builder">The builder.</param>
-    /// <returns>The builder.</returns>
     private static void InjectServices(this WebApplicationBuilder builder)
     {
         builder.Services
@@ -72,7 +70,6 @@ public static class DependancyInjection
     /// This method is used to configure the dependancy injection for the built in services.
     /// </summary>
     /// <param name="builder">The builder.</param>
-    /// <returns>The builder.</returns>
     private static void InjectBuiltInServices(this WebApplicationBuilder builder)
     {
         builder.Services.AddControllers();
@@ -84,7 +81,6 @@ public static class DependancyInjection
     /// This method is used to configure the dependancy injection for the db context.
     /// </summary>
     /// <param name="builder">The builder.</param>
-    /// <returns>The builder.</returns>
     private static void InjectDbContext(this WebApplicationBuilder builder)
     {
         builder.Services.AddDbContext<AppDbContext>(options =>
@@ -95,17 +91,20 @@ public static class DependancyInjection
     /// This method is used to configure the dependancy injection for the mediator.
     /// </summary>
     /// <param name="builder">The builder.</param>
-    /// <returns>The builder.</returns>
     private static void InjectMedaitor(this WebApplicationBuilder builder)
     {
         builder.Services.AddSingleton<IMediator, Mediator>();
+    }
+
+    private static void InjectMappers(this WebApplicationBuilder builder)
+    {
+        builder.Services.AddSingleton<IMapper, CategoryMapper>();
     }
 
     /// <summary>
     /// This method is used to configure the dependancy injection for the request handlers.
     /// </summary>
     /// <param name="builder">The builder.</param>
-    /// <returns>The builder.</returns>
     private static void InjectRequestHandlers(this WebApplicationBuilder builder)
     {
         builder.Services.AddScoped<IRequestHandler<CreateCategoryCommand, RequestHandlerResult<CreateCategoryResponse>>, CreateCategoryCommandHandler>();

@@ -1,6 +1,7 @@
 ﻿using Application.Common.AppMediator;
 using Application.Common.AppRequestHandlerResult;
 using Application.Common.Extensions.Mapping;
+using Application.Common.Mappers.Abstract;
 using Application.Models.Requests.Commands.Categories;
 using Application.Models.Response.Commands.Categories;
 using Application.Services.ModelServices;
@@ -13,7 +14,7 @@ public class UpdateCategoryCommandHandler : IRequestHandler<UpdateCategoryComman
 
     public async Task<RequestHandlerResult<UpdateCategoryResponse>> HandleAsync(UpdateCategoryCommand request, CancellationToken cancellationToken)
     {
-        var entity = request.MapToDomain();
+        var entity = _categoryMapper.MapToDomain(request);
         var updateResult = await this._categoryService.TryUpdateAsync(entity);
 
         if (updateResult.IsFail)
@@ -45,9 +46,11 @@ public class UpdateCategoryCommandHandler : IRequestHandler<UpdateCategoryComman
     }
 
     private ICategoryService _categoryService;
+    private ICategoryMapper _categoryMapper;
 
-    public UpdateCategoryCommandHandler(ICategoryService categoryService)
+    public UpdateCategoryCommandHandler(ICategoryService categoryService, ICategoryMapper categoryMapper)
     {
         _categoryService = categoryService;
+        _categoryMapper = categoryMapper;
     }
 }

@@ -1,24 +1,33 @@
-﻿using Application.Common.AppMediator;
+﻿namespace Application.RequestHandlers.CommandHandlers.Categories; using Application.Common.AppMediator;
+
 using Application.Common.AppRequestHandlerResult;
 using Application.Common.Extensions.Mapping;
+using Application.Common.Mappers.Abstract;
 using Application.Models.Requests.Commands.Categories;
 using Application.Models.Response.Commands.Categories;
 using Application.Services.ModelServices;
 using Domain.Models;
 using Domain.Results;
 
-namespace Application.RequestHandlers.CommandHandlers.Categories;
-
+/// <summary>
+/// This class handles the creation of a category.
+/// </summary>
 public class CreateCategoryCommandHandler : IRequestHandler<CreateCategoryCommand, RequestHandlerResult<CreateCategoryResponse>>
 {
-    public CreateCategoryCommandHandler(ICategoryService categoryService)
+    /// <summary>
+    /// This is the constructor for the CreateCategoryCommandHandler class.
+    /// </summary>
+    /// <param name="categoryService"></param>
+    /// <param name="categoryMapper"></param>
+    public CreateCategoryCommandHandler(ICategoryService categoryService, ICategoryMapper categoryMapper)
     {
-        _categoryService = categoryService;
+        this._categoryService = categoryService;
+        this._categoryMapper = categoryMapper;
     }
 
     public async Task<RequestHandlerResult<CreateCategoryResponse>> HandleAsync(CreateCategoryCommand request, CancellationToken cancellationToken)
     {
-        var entity = request.MapToDomain();
+        var entity = _categoryMapper.MapToDomain(request);
         var result = await this._categoryService.TryAddAsync(entity);
 
         if (result.IsFail)
@@ -37,10 +46,16 @@ public class CreateCategoryCommandHandler : IRequestHandler<CreateCategoryComman
         }
         else
         {
-            var response = result.Value!.MapToResponse();
+            var response = _categoryMapper.MapToResponse(result.Value!);
             return RequestHandlerResult<CreateCategoryResponse>.Ok(response);
         }
     }
 
+    /// <summary>
+    /// The category service used to create a category.
+    /// </summary>
     private ICategoryService _categoryService;
+
+
+    private ICategoryMapper _categoryMapper;
 }
